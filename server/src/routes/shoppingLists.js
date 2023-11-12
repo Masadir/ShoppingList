@@ -60,31 +60,30 @@ router.get("/savedLists/:userID", async (req, res) => {
     }
 });
 
-// Import necessary modules and ListModel
+router.delete("/:listID", verifyToken, async (req, res) => {
+    try {
+        const list = await ListModel.findByIdAndDelete(req.params.listID);
+        res.json({ message: "List deleted successfully", deletedList: list });
+    } catch (err) {
+        res.status(500).json({ error: "Error deleting the list", details: err });
+    }
+});
 
-// Assuming `ListModel` represents your Mongoose model for the lists
-
-// Endpoint to get details of a specific list by ID
 router.get("/:listID", async (req, res) => {
     try {
-        const listID = req.params.listID; // Fetch the list ID from the URL
+        const listID = req.params.listID; 
 
-        // Query the database using the ListModel to find the list by ID
         const list = await ListModel.findById(listID);
 
         if (!list) {
-            // If the list is not found, respond with a 404 Not Found status
             return res.status(404).json({ message: "List not found" });
         }
 
-        // If the list is found, respond with the list details
         res.json(list);
     } catch (error) {
-        // Handle any errors that occur during this process
         console.error(error);
         res.status(500).json({ message: "Server Error" });
     }
 });
-
 
 export {router as listsRouter};
