@@ -40,12 +40,26 @@ import {UserModel} from "../models/Users.js";
     res.json({token, userID: user._id});
  }); 
 
+ router.get("/nickname/:userID", async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.params.userID);
+        if (user) {
+            res.json({ nickname: user.nickname });
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
  export {router as userRouter}; 
 
  export const verifyToken = (req, res, next) => {
     const token = req.headers.authorization;
     if (token) {
-        jwt.verify(token, "secret", (err) => {
+        jwt.verify(token, "secret", (err) => { 
             if (err) return res.sendStatus(403);
             next();
         });

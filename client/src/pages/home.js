@@ -8,10 +8,10 @@ export const Home = () => {
     const [lists, setLists] = useState([]);
     const [savedLists, setSavedLists] = useState([]);
     const [selectedList, setSelectedList] = useState(null);
+    const [editingListId, setEditingListId] = useState(null);
     const [cookies, _] = useCookies(["access_token"]);
     const userID = useGetUserID();
     const navigate = useNavigate();
-    
 
     useEffect(() => {
         const fetchLists = async () => {
@@ -76,6 +76,26 @@ export const Home = () => {
         }
     };
 
+    const handleEditClick = (listId) => {
+        setEditingListId(listId);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingListId(null);
+    };
+
+    const handleSaveEdit = async (listId, updatedItems) => {
+        try {
+            await axios.put(`http://localhost:3001/lists/${listId}`, { items: updatedItems }, {
+                headers: { authorization: cookies.access_token },
+            });
+            navigate("/lists");
+            setEditingListId(null);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return (
         <div>
             {selectedList ? (
@@ -95,25 +115,61 @@ export const Home = () => {
                 <div>
                     <h1>Lists</h1>
                     <ul>
-                        {lists.map((list) => (
-                            <li key={list._id} onClick={() => handleListClick(list._id)} style={{ cursor: "pointer" }}>
-                                <div>
-                                    <h2>{list.name}</h2>
-                                    <div className="items">
-                                        {list.items.map((item, index) => (
-                                            <p key={index}>{item}</p>
-                                        ))}
-                                    </div>
-                                    <button onClick={() => saveList(list._id)} disabled={isListSaved(list._id)}>
-                                        {isListSaved(list._id) ? "Saved" : "Save"}
-                                    </button>
-                                    <button onClick={() => deleteList(list._id)}>Delete</button>
+                {lists.map((list) => (
+                    <li>
+                        <div>
+                            <h2 key={list._id} onClick={() => handleListClick(list._id)} style={{ cursor: "pointer" }}>{list.name}</h2>
+                            <h4>{list.userOwner}</h4>
+                            {editingListId === list._id ? (
+                                <EditListForm
+                                    items={list.items}
+                                    onCancel={handleCancelEdit}
+                                    onSave={(updatedItems) => handleSaveEdit(list._id, updatedItems)}
+                                />
+                            ) : (
+                                <div className="items">
+                                    {list.items.map((item, index) => (
+                                        <p key={index}>{item}</p>
+                                    ))}
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
+                            )}
+                            <button onClick={() => saveList(list._id)} disabled={isListSaved(list._id)}>
+                                {isListSaved(list._id) ? "Saved" : "Save"}
+                            </button>
+                            <button onClick={() => deleteList(list._id)}>Delete</button>
+                            <button onClick={() => handleEditClick(list._id)}>Edit</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
                 </div>
             )}
+        </div>
+    );
+};
+
+const EditListForm = ({ items, onCancel, onSave }) => {
+    const [editedItems, setEditedItems] = useState([...items]);
+
+    const handleItemChange = (index, newValue) => {
+        const newItems = [...editedItems];
+        newItems[index] = newValue;
+        setEditedItems(newItems);
+    };
+
+    return (
+        <div>
+            <h3>Edit List</h3>
+            {editedItems.map((item, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={item}
+                    onChange={(e) => handleItemChange(index, e.target.value)}
+                />
+            ))}
+            <button onClick={onCancel}>Cancel</button>
+            <button onClick={() => onSave(editedItems)}>Save</button>
         </div>
     );
 };

@@ -86,4 +86,21 @@ router.get("/:listID", async (req, res) => {
     }
 });
 
+router.put("/:listID", verifyToken, async (req, res) => {
+    try {
+        const listID = req.params.listID;
+        const updatedItems = req.body.items;
+
+        const list = await ListModel.findByIdAndUpdate(listID, { items: updatedItems }, { new: true });
+
+        if (!list) {
+            return res.status(404).json({ message: "List not found" });
+        }
+
+        res.json({ message: "List updated successfully", updatedList: list });
+    } catch (err) {
+        res.status(500).json({ error: "Error updating the list", details: err });
+    }
+});
+
 export {router as listsRouter};
