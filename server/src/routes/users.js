@@ -27,7 +27,7 @@ import {UserModel} from "../models/Users.js";
     const user = await UserModel.findOne({username: username});
 
     if (!user) {
-        return res.json({message: "User Doesn't Exist!"});
+        return res.json({message: "User Doesnt Exist!"});
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);

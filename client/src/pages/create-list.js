@@ -3,10 +3,12 @@ import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import {useTranslation} from 'react-i18next';
 
 export const CreateList = () => {
   const userID = useGetUserID();
   const [cookies, _] = useCookies(["access_token"]);
+  const {t} = useTranslation();
 
   const [list, setList] = useState({
     name: "",
@@ -67,11 +69,11 @@ export const CreateList = () => {
 
   return (
     <div className="create-list">
-      <h2>CreateList</h2>
+      <h2>{t('Create List')}</h2>
       <form onSubmit={onSubmit}>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="name">{t('Name')}</label>
         <input type="text" id="name" name="name" onChange={handleChange} />
-        <label htmlFor="items">Items</label>
+        <label htmlFor="items">{t('Items')}</label>
         {list.items.map((item, idx) => (
           <input
             key={idx}
@@ -82,9 +84,9 @@ export const CreateList = () => {
           />
         ))}
         <button onClick={addItem} type="button">
-          Add Item
+          {t('Add Item')}
         </button>
-        <button type="submit">Finish List</button>
+        <button type="submit">{t('Finish List')}</button>
       </form>
     </div>
   );

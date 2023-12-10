@@ -17,7 +17,6 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f2f2f2;
 }
 
 .authorization-container {
@@ -26,7 +25,6 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   margin: 20px;
@@ -75,16 +73,17 @@ a {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   margin: 20px;
   width: 400px;
 }
+
 .create-list form {
   display: flex;
   flex-direction: column;
 }
+
 ul {
   list-style: none;
   padding: 0;
@@ -114,4 +113,14 @@ img {
 p {
   max-width: 400px;
   font-size: 12px;
+}
+
+.light-mode {
+  background-color: #fff;
+  color: #333;
+}
+
+.dark-mode {
+  background-color: #333;
+  color: #fff;
 }

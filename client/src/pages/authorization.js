@@ -2,6 +2,7 @@ import {useState} from "react";
 import axios from "axios";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 
 export const Authorization = () => {
     return (
@@ -20,6 +21,8 @@ const Login = () => {
     const [_, setCookies] = useCookies(["access_token"])
 
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -45,7 +48,7 @@ const Login = () => {
             setUsername={setUsername} 
             password={password} 
             setPassword={setPassword}
-            label="Login"
+            label={t('Login')}
             onSubmit={onSubmit}
         />
     );
@@ -55,6 +58,8 @@ const Register = () => {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const {t} = useTranslation();
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -75,19 +80,20 @@ const Register = () => {
             setUsername={setUsername} 
             password={password} 
             setPassword={setPassword}
-            label="Register"
+            label={t('Register')}
             onSubmit={onSubmit}
         />
     );
 };
 
 const Form = ({username, setUsername, password, setPassword, label, onSubmit}) => {
+    const {t} = useTranslation();
     return (
     <div className="authorization-container">
         <form onSubmit={onSubmit}>
             <h2> {label} </h2>
             <div className="form-group">
-                <label htmlFor="username"> Username: </label>
+                <label htmlFor="username"> {t('Username')} </label>
                 <input 
                     type="text" 
                     id="username" 
@@ -95,7 +101,7 @@ const Form = ({username, setUsername, password, setPassword, label, onSubmit}) =
                     onChange={(event) => setUsername(event.target.value)}/>
             </div>
             <div className="form-group">
-                <label htmlFor="password"> Password: </label>
+                <label htmlFor="password"> {t('Password')} </label>
                 <input 
                     type="password" 
                     id="password"

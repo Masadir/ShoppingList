@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {useGetUserID} from "../hooks/useGetUserID.js";
+import {useTranslation} from 'react-i18next';
 
 export const SavedLists = () => {
 
     const [savedLists, setSavedLists] = useState([]);
-
     const userID = useGetUserID();
+    const {t} = useTranslation();
 
     useEffect(() => {
 
@@ -25,7 +26,7 @@ export const SavedLists = () => {
 
     return (
         <div>
-          <h1>Archive</h1>
+          <h1>{t('Archive')}</h1>
           <ul>
             {savedLists.map((list) => (
               <li key={list._id}>

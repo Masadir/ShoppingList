@@ -14,7 +14,13 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", async (req, res) => {
+
+    const { name, items, userOwner } = req.body;
+
+    if (name.length > 255 || items.some(item => item.length > 255) || userOwner.length > 255) {
+        return res.status(400).json({ message: 'Input parameters exceed the maximum length of 255 characters' });
+    }
 
     const list = new ListModel(req.body);
 
@@ -26,8 +32,7 @@ router.post("/", verifyToken, async (req, res) => {
     }
 });
 
-router.put("/", verifyToken, async (req, res) => {
-
+router.put("/", async (req, res) => {
     try {
         const list = await ListModel.findById(req.body.listID);
         const user = await UserModel.findById(req.body.userID);
@@ -60,9 +65,13 @@ router.get("/savedLists/:userID", async (req, res) => {
     }
 });
 
-router.delete("/:listID", verifyToken, async (req, res) => {
+router.delete("/:listID", async (req, res) => {
     try {
         const list = await ListModel.findByIdAndDelete(req.params.listID);
+        if (!list) {
+            console.log("List not found:", listID);
+            return res.status(404).json({ message: "List not found" });
+        }
         res.json({ message: "List deleted successfully", deletedList: list });
     } catch (err) {
         res.status(500).json({ error: "Error deleting the list", details: err });
@@ -76,17 +85,19 @@ router.get("/:listID", async (req, res) => {
         const list = await ListModel.findById(listID);
 
         if (!list) {
+            console.log("List not found:", listID);
             return res.status(404).json({ message: "List not found" });
         }
 
         res.json(list);
     } catch (error) {
-        console.error(error);
+        console.error("Error in /lists/:listID route:", error);
         res.status(500).json({ message: "Server Error" });
     }
 });
 
-router.put("/:listID", verifyToken, async (req, res) => {
+
+router.put("/:listID", async (req, res) => {
     try {
         const listID = req.params.listID;
         const updatedItems = req.body.items;

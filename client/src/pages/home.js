@@ -1,8 +1,10 @@
+import '../App.css';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useGetUserID} from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 
 export const Home = () => {
     const [lists, setLists] = useState([]);
@@ -12,6 +14,8 @@ export const Home = () => {
     const [cookies, _] = useCookies(["access_token"]);
     const userID = useGetUserID();
     const navigate = useNavigate();
+    const {t} = useTranslation();
+
 
     useEffect(() => {
         const fetchLists = async () => {
@@ -113,7 +117,7 @@ export const Home = () => {
                 </div>
             ) : (
                 <div>
-                    <h1>Lists</h1>
+                    <h1>{t('Lists')}</h1>
                     <ul>
                 {lists.map((list) => (
                     <li>
@@ -136,8 +140,8 @@ export const Home = () => {
                             <button onClick={() => saveList(list._id)} disabled={isListSaved(list._id)}>
                                 {isListSaved(list._id) ? "Saved" : "Save"}
                             </button>
-                            <button onClick={() => deleteList(list._id)}>Delete</button>
-                            <button onClick={() => handleEditClick(list._id)}>Edit</button>
+                            <button onClick={() => deleteList(list._id)}> {t('Delete')} </button>
+                            <button onClick={() => handleEditClick(list._id)}> {t('Edit')} </button>
                         </div>
                     </li>
                 ))}

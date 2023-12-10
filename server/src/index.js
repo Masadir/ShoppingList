@@ -15,4 +15,6 @@ app.use("/lists", listsRouter);
 
 mongoose.connect("mongodb+srv://masadir:homework@shopapp.jypmulj.mongodb.net/shopapp?retryWrites=true&w=majority")
 
-app.listen(3001, () => console.log("Server Started!"));
+const server = app.listen(3001, () => console.log("Server Started!"));
+
+export { app, server };
